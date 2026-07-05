@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import { MapPin, Users, Clock, Phone, Navigation } from 'lucide-react'
 
-export default function StaffActiveDispatch({ currentUser }) {
+export default function StaffActiveDispatch() {
   const [activeEvent, setActiveEvent] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function loadActiveDispatch() {
+      setLoading(true)
+      
+      // In a real app, we'd look for an event assigned specifically to this staff member
+      // For now, we pull the most immediate event that is dispatched to cart
+      const { data } = await supabase
+        .from('bookings')
+        .select('*, profiles(full_name, phone_number)')
+        .eq('status', 'dispatched_to_cart')
+        .order('event_date', { ascending: true })
+        .limit(1)
+
+      if (data && data.length > 0) {
+        setActiveEvent(data[0])
+      }
+      
+      setLoading(false)
+    }
+
     loadActiveDispatch()
   }, [])
-
-  async function loadActiveDispatch() {
-    setLoading(true)
-    
-    // In a real app, we'd look for an event assigned specifically to this staff member
-    // For now, we pull the most immediate event that is dispatched to cart
-    const { data } = await supabase
-      .from('bookings')
-      .select('*, profiles(full_name, phone_number)')
-      .eq('status', 'dispatched_to_cart')
-      .order('event_date', { ascending: true })
-      .limit(1)
-
-    if (data && data.length > 0) {
-      setActiveEvent(data[0])
-    }
-    
-    setLoading(false)
-  }
 
   const handleStartNavigation = () => {
     alert('Opening Google Maps navigation to Pincode: ' + activeEvent.venue_pincode)

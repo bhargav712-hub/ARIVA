@@ -6,7 +6,7 @@
   --terracotta-deep: #93421F;
   --bone: #F4EFE6;
   --bone-light: #F4F0E7;
-  --sand: #D8A47F;
+  --sand: #F4EFE6;
   --ink-soft: #5C534D;
   --white: #FFFFFF;
   --serif: 'Cormorant Garamond', Georgia, serif;
@@ -335,7 +335,7 @@
   font-size: 11px;
   border-radius: 4px;
   font-weight: 600;
-  background: rgba(216, 164, 127, 0.15);
+  background: rgba(244, 239, 230, 0.15);
   color: var(--terracotta-deep);
   text-transform: uppercase;
   letter-spacing: 1px;

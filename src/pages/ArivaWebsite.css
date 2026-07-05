@@ -4,7 +4,7 @@
   --terracotta-deep:#93421F;
   --bone:#F4EFE6;
   --bone-light:#F4F0E7;
-  --sand:#D8A47F;
+  --sand:#F4EFE6;
   --ink-soft:#5C534D;
   --white:#FFFFFF;
   --serif:'Cormorant Garamond',Georgia,serif;
@@ -28,8 +28,8 @@ section{padding:96px 0}
 .logo-mark{width:30px;height:30px;flex-shrink:0}
 .logo-word{font-family:var(--sans);font-weight:500;font-size:25px;letter-spacing:1px;color:var(--ink);line-height:1}
 .logo-word::after{content:'.';color:var(--terracotta);font-weight:600}
-.logo-img{height:64px;width:auto;display:block}
-footer .logo-img{background:var(--bone);padding:7px 11px;border-radius:8px}
+.logo-img{height:80px;width:auto;display:block}
+.dark-bg-logo{filter:invert(1) hue-rotate(180deg) brightness(1.2);mix-blend-mode:screen;border-radius:4px}
 
 /* ---------- NAV ---------- */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 0;transition:all .35s ease;background:#F4F0E7}
@@ -38,6 +38,8 @@ nav.scrolled{box-shadow:0 1px 0 rgba(26,22,20,.08);padding:13px 0}
 .nav-links{display:flex;gap:30px;align-items:center;list-style:none}
 .nav-links a{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:400;color:var(--ink);transition:color .25s}
 .nav-links a:hover{color:var(--terracotta)}
+.nav-links a.btn-primary{color:#fff}
+.nav-links a.btn-primary:hover{color:#fff}
 .btn{display:inline-block;padding:15px 34px;border-radius:2px;font-family:var(--sans);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .3s;transform-style:preserve-3d}
 .btn-primary{background:var(--terracotta);color:#fff}
 .btn-primary:hover{background:var(--terracotta-deep);transform:translateY(-3px);box-shadow:0 14px 28px rgba(181,83,45,.35)}
@@ -50,13 +52,14 @@ nav.scrolled{box-shadow:0 1px 0 rgba(26,22,20,.08);padding:13px 0}
 
 /* ---------- HERO (3D scene) ---------- */
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;background:linear-gradient(165deg,#14100e 0%,var(--ink) 50%,#2a221d 100%);color:var(--bone);overflow:hidden;padding:150px 0 90px;perspective:1200px}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 78% 25%,rgba(181,83,45,.22),transparent 55%),radial-gradient(ellipse at 12% 85%,rgba(216,164,127,.12),transparent 50%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 78% 25%,rgba(181,83,45,.22),transparent 55%),radial-gradient(ellipse at 12% 85%,rgba(244,239,230,.12),transparent 50%)}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative;z-index:2}
 .hero .eyebrow{color:var(--sand)}
 .hero h1{font-size:clamp(42px,5.8vw,76px);font-weight:500;color:#fff;margin-bottom:26px}
 .hero h1 em{font-style:italic;color:var(--sand)}
 .hero p.lead{font-size:18.5px;color:rgba(244,239,230,.85);max-width:540px;margin-bottom:40px;font-weight:300}
-.hero-ctas{display:flex;gap:18px;flex-wrap:wrap}
+.hero-ctas{display:flex;gap:18px;width:100%}
+.hero-ctas .btn{flex:1;width:auto;text-align:center;padding-left:10px;padding-right:10px}
 .hero-meta{margin-top:58px;display:flex;gap:44px;flex-wrap:wrap}
 .hero-meta div{font-size:13px;letter-spacing:1px;color:rgba(244,239,230,.65)}
 .hero-meta strong{display:block;font-family:var(--serif);font-size:26px;letter-spacing:0;color:#fff;font-weight:500}
@@ -96,12 +99,12 @@ nav.scrolled{box-shadow:0 1px 0 rgba(26,22,20,.08);padding:13px 0}
 .how .section-title{color:#fff}
 .how .section-sub{color:rgba(244,239,230,.7)}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:64px;perspective:1400px}
-.step{border:1px solid rgba(216,164,127,.22);border-radius:8px;padding:38px 32px;background:rgba(244,239,230,.03)}
+.step{border:1px solid rgba(244,239,230,.22);border-radius:8px;padding:38px 32px;background:rgba(244,239,230,.03)}
 .step:hover{box-shadow:0 26px 52px rgba(0,0,0,.4)}
 .step-num{font-family:var(--serif);font-size:50px;font-style:italic;color:var(--sand);line-height:1;display:block;margin-bottom:18px}
 .step h3{font-size:23px;color:#fff;margin-bottom:12px}
 .step p{font-size:15px;color:rgba(244,239,230,.72)}
-.how-note{margin-top:44px;display:flex;align-items:center;gap:16px;background:rgba(216,164,127,.1);border:1px solid rgba(216,164,127,.25);border-radius:8px;padding:20px 26px;max-width:760px}
+.how-note{margin-top:44px;display:flex;align-items:center;gap:16px;background:rgba(244,239,230,.1);border:1px solid rgba(244,239,230,.25);border-radius:8px;padding:20px 26px;max-width:760px}
 .how-note svg{flex-shrink:0}
 .how-note p{font-size:14.5px;color:rgba(244,239,230,.85)}
 
@@ -262,7 +265,7 @@ nav.scrolled{box-shadow:0 1px 0 rgba(26,22,20,.08);padding:13px 0}
 .book-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;margin-top:24px}
 .book-info h3{color:var(--ink);font-size:24px;margin:32px 0 10px}
 .book-info p{color:rgba(244,239,230,.72);font-size:15px}
-.book-info a{color:var(--sand);border-bottom:1px solid rgba(216,164,127,.4)}
+.book-info a{color:var(--sand);border-bottom:1px solid rgba(244,239,230,.4)}
 .form-card{background:rgba(244,239,230,.04);border:1px solid rgba(244,239,230,.15);border-radius:8px;padding:44px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .booking .field{margin-bottom:22px}

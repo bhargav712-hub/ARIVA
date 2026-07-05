@@ -6,24 +6,24 @@ export default function Kitchen() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function fetchInventory() {
+      try {
+        const { data, error } = await supabase
+          .from('inventory')
+          .select('*')
+          .order('item_name')
+        
+        if (error) throw error
+        setInventory(data || [])
+      } catch (err) {
+        console.error('Error fetching inventory:', err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
     fetchInventory()
   }, [])
-
-  async function fetchInventory() {
-    try {
-      const { data, error } = await supabase
-        .from('inventory')
-        .select('*')
-        .order('item_name')
-      
-      if (error) throw error
-      setInventory(data || [])
-    } catch (err) {
-      console.error('Error fetching inventory:', err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function triggerOrderWebhook(item) {
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 
@@ -9,24 +9,24 @@ export default function CustomerBookings() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function loadBookings() {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
+      
+      if (!error && data) {
+        setBookings(data)
+      }
+      setLoading(false)
+    }
+
     if (currentUser) {
       loadBookings()
     }
   }, [currentUser])
-
-  async function loadBookings() {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('bookings')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('created_at', { ascending: false })
-    
-    if (!error && data) {
-      setBookings(data)
-    }
-    setLoading(false)
-  }
 
   if (loading) return <p className="desc">Loading your events...</p>
 

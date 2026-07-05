@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { supabase } from '../../supabaseClient'
+import { useState, useEffect } from 'react'
 import { Calendar, ClipboardList, BookOpen, ChefHat, PackageSearch } from 'lucide-react'
 import ChefMyEvents from './ChefMyEvents'
 import ChefPrepQueue from './ChefPrepQueue'
@@ -11,18 +10,17 @@ const ChefInventory = () => <div className="dash-card"><h2>Inventory View</h2><p
 
 export default function ChefPortal({ currentUser }) {
   const [activeTab, setActiveTab] = useState('events')
-  const [profile, setProfile] = useState(null)
 
   useEffect(() => {
+    async function loadProfile() {
+      // Intentionally loading profile or keeping it for side-effects if any, but since we don't use it, we can omit it.
+      // But let's just let it be or remove the data fetching since it's not used.
+    }
+
     if (currentUser) {
       loadProfile()
     }
   }, [currentUser])
-
-  async function loadProfile() {
-    const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
-    if (data) setProfile(data)
-  }
 
   const renderTab = () => {
     switch (activeTab) {

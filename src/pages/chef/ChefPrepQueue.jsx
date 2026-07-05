@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
-import { CheckSquare, Flame, CheckCircle, Clock } from 'lucide-react'
+import { Flame, CheckCircle, Clock } from 'lucide-react'
 
-export default function ChefPrepQueue({ currentUser }) {
+export default function ChefPrepQueue() {
   const [upcomingEvents, setUpcomingEvents] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function loadPrepData() {
+      setLoading(true)
+      const { data } = await supabase
+        .from('bookings')
+        .select('id, event_date, guest_count, status')
+        .in('status', ['confirmed', 'advance_paid']) // Events that need prep
+        .order('event_date', { ascending: true })
+
+      if (data) setUpcomingEvents(data)
+      setLoading(false)
+    }
+
     loadPrepData()
   }, [])
-
-  async function loadPrepData() {
-    setLoading(true)
-    const { data } = await supabase
-      .from('bookings')
-      .select('id, event_date, guest_count, status')
-      .in('status', ['confirmed', 'advance_paid']) // Events that need prep
-      .order('event_date', { ascending: true })
-
-    if (data) setUpcomingEvents(data)
-    setLoading(false)
-  }
 
   // Hardcoded prep lists based on the dishes for demonstration
   const dummyPrepItems = [

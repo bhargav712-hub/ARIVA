@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 
@@ -18,26 +18,26 @@ export default function CustomerProfile() {
   const [loyaltyTier, setLoyaltyTier] = useState('bronze')
 
   useEffect(() => {
+    async function loadProfile() {
+      setLoading(true)
+      const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
+      if (data) {
+        setFullName(data.full_name || '')
+        setPhone(data.phone || '')
+        setAddressArea(data.address_area || '')
+        setDietary(data.dietary_preferences || '')
+        setAllergies(data.allergies || '')
+        setFamilyPrefs(data.family_preferences || '')
+        setSpecialPrefs(data.special_preferences || '')
+        setLoyaltyTier(data.loyalty_tier || 'bronze')
+      }
+      setLoading(false)
+    }
+
     if (currentUser) {
       loadProfile()
     }
   }, [currentUser])
-
-  async function loadProfile() {
-    setLoading(true)
-    const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
-    if (data) {
-      setFullName(data.full_name || '')
-      setPhone(data.phone || '')
-      setAddressArea(data.address_area || '')
-      setDietary(data.dietary_preferences || '')
-      setAllergies(data.allergies || '')
-      setFamilyPrefs(data.family_preferences || '')
-      setSpecialPrefs(data.special_preferences || '')
-      setLoyaltyTier(data.loyalty_tier || 'bronze')
-    }
-    setLoading(false)
-  }
 
   const handleSave = async (e) => {
     e.preventDefault()
@@ -76,7 +76,7 @@ export default function CustomerProfile() {
               You are currently a <strong style={{ textTransform: 'uppercase' }}>{loyaltyTier}</strong> tier host.
             </p>
           </div>
-          <div style={{ padding: '15px 25px', background: 'rgba(216, 164, 127, 0.1)', borderRadius: '8px', textAlign: 'center' }}>
+          <div style={{ padding: '15px 25px', background: 'rgba(244, 239, 230, 0.1)', borderRadius: '8px', textAlign: 'center' }}>
             <span style={{ display: 'block', fontSize: '24px', fontWeight: 'bold', color: 'var(--terracotta)' }}>{loyaltyTier === 'bronze' ? '0%' : loyaltyTier === 'silver' ? '5%' : '10%'}</span>
             <span style={{ fontSize: '11px', color: 'var(--sand)', textTransform: 'uppercase', letterSpacing: '1px' }}>Discount</span>
           </div>

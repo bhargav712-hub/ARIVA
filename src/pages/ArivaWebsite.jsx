@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import './ArivaWebsite.css'
 
@@ -36,12 +36,11 @@ const posts = {
 }
 
 export default function ArivaWebsite() {
-  const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const [modalPost, setModalPost] = useState(null)
-  const [pinMsg, setPinMsg] = useState({ text: '', cls: '' })
+
   const [navAccountText, setNavAccountText] = useState('Login')
   const [menuCategories, setMenuCategories] = useState([])
   const [menuItems, setMenuItems] = useState([])
@@ -51,7 +50,6 @@ export default function ArivaWebsite() {
   const heroRef = useRef(null)
   const markBgRef = useRef(null)
   const fdateRef = useRef(null)
-  const fpkgRef = useRef(null)
 
   // Nav scroll
   useEffect(() => {
@@ -183,28 +181,8 @@ export default function ArivaWebsite() {
   // Close mobile menu on link click
   const closeMenu = () => { setMenuOpen(false) }
 
-  // Package preselect
-  const setPkg = useCallback((name) => {
-    if (!fpkgRef.current) return
-    const sel = fpkgRef.current
-    for (const o of sel.options) {
-      if (o.text.startsWith(name)) { sel.selectedIndex = o.index; break }
-    }
-  }, [])
 
-  // Pincode check
-  const handlePincode = (e) => {
-    const v = e.target.value.trim()
-    if (v.length === 6) {
-      if (/^50[0-2]\d{3}$/.test(v)) {
-        setPinMsg({ text: '✓ Great news - we serve your area!', cls: 'ok' })
-      } else {
-        setPinMsg({ text: "We currently serve Hyderabad only - but send your enquiry and we'll see what we can do.", cls: 'no' })
-      }
-    } else {
-      setPinMsg({ text: '', cls: '' })
-    }
-  }
+
 
   // FAQ toggle
   const toggleFaq = (idx) => {
@@ -228,45 +206,6 @@ export default function ArivaWebsite() {
     return () => document.removeEventListener('keydown', handleKey)
   }, [])
 
-  // Booking form
-  const handleBooking = async (e) => {
-    e.preventDefault()
-    const g = (id) => document.getElementById(id).value
-
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      alert('Please log in or create a free account first, then send your enquiry.')
-      navigate('/account?next=book')
-      return
-    }
-
-    const enquiry = {
-      user_id: session.user.id,
-      name: g('fname'),
-      phone: g('fphone'),
-      event_date: g('fdate') || null,
-      guests: g('fguests') ? Number(g('fguests')) : null,
-      package: g('fpkg'),
-      pincode: g('fpin'),
-      notes: g('fnotes') || null,
-    }
-    const { error } = await supabase.from('enquiries').insert(enquiry)
-    if (error) {
-      alert('Sorry - we could not save your enquiry: ' + error.message)
-      return
-    }
-
-    const msg =
-      `Hi ARIVA! I'd like to enquire about a booking.%0A%0A` +
-      `*Name:* ${encodeURIComponent(g('fname'))}%0A` +
-      `*Phone:* ${encodeURIComponent(g('fphone'))}%0A` +
-      `*Date:* ${encodeURIComponent(g('fdate'))}%0A` +
-      `*Guests:* ${encodeURIComponent(g('fguests'))}%0A` +
-      `*Package:* ${encodeURIComponent(g('fpkg'))}%0A` +
-      `*Pincode:* ${encodeURIComponent(g('fpin'))}%0A` +
-      `*Details:* ${encodeURIComponent(g('fnotes') || '-')}`
-    window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank')
-  }
 
   const faqItems = [
     { q: 'What exactly does ARIVA bring to my home?', a: 'Everything. Our kitchen trailer, a professional chef and helper, all ingredients, cookware, serving ware, and the hands to set up, serve, and clean up. You provide the venue and the guests - we do the rest.' },
@@ -347,14 +286,14 @@ export default function ArivaWebsite() {
                 </g>
                 <rect x="214" y="178" width="180" height="76" rx="8" fill="#1A1614" />
                 <rect x="222" y="186" width="164" height="60" rx="5" fill="#2a221d" />
-                <circle cx="270" cy="214" r="13" fill="#D8A47F" />
+                <circle cx="270" cy="214" r="13" fill="#F4EFE6" />
                 <path d="M257 210 q13 -16 26 0 l-2 -12 q-11 -8 -22 0 Z" fill="#F4EFE6" />
                 <rect x="256" y="227" width="28" height="19" rx="6" fill="#F4EFE6" />
                 <rect x="306" y="226" width="42" height="8" rx="4" fill="#6b6259" />
                 <path d="M316 222 q5 -14 11 0 q5 -10 9 0 Z" fill="#E58A3A" />
                 <path d="M320 222 q4 -9 7 0 Z" fill="#F4C26B" />
-                <path d="M327 200 q-6 -8 0 -15 q6 -7 0 -14" stroke="#D8A47F" strokeWidth="3.4" strokeLinecap="round" opacity=".8" />
-                <path d="M341 204 q-5 -7 0 -13 q5 -6 0 -12" stroke="#D8A47F" strokeWidth="3" strokeLinecap="round" opacity=".55" />
+                <path d="M327 200 q-6 -8 0 -15 q6 -7 0 -14" stroke="#F4EFE6" strokeWidth="3.4" strokeLinecap="round" opacity=".8" />
+                <path d="M341 204 q-5 -7 0 -13 q5 -6 0 -12" stroke="#F4EFE6" strokeWidth="3" strokeLinecap="round" opacity=".55" />
                 <rect x="206" y="254" width="196" height="10" rx="5" fill="#93421F" />
                 <g transform="translate(424 178) scale(.52)">
                   <path d="M50 8 L80 82 Q50 68 20 82 Z" fill="none" stroke="#B5532D" strokeWidth="11" strokeLinejoin="round" strokeLinecap="round" />
@@ -370,12 +309,12 @@ export default function ArivaWebsite() {
                 <rect x="556" y="186" width="46" height="48" rx="8" fill="#93421F" />
                 <rect x="562" y="192" width="34" height="26" rx="5" fill="#2a221d" />
                 <rect x="600" y="170" width="9" height="34" rx="4" fill="#1A1614" />
-                <path d="M604 162 q-5 -7 0 -13" stroke="#D8A47F" strokeWidth="3" strokeLinecap="round" opacity=".6" />
-                <circle cx="588" cy="316" r="42" fill="#1A1614" /><circle cx="588" cy="316" r="24" fill="#3a322c" /><circle cx="588" cy="316" r="9" fill="#D8A47F" />
-                <circle cx="536" cy="330" r="26" fill="#1A1614" /><circle cx="536" cy="330" r="13" fill="#3a322c" /><circle cx="536" cy="330" r="5" fill="#D8A47F" />
+                <path d="M604 162 q-5 -7 0 -13" stroke="#F4EFE6" strokeWidth="3" strokeLinecap="round" opacity=".6" />
+                <circle cx="588" cy="316" r="42" fill="#1A1614" /><circle cx="588" cy="316" r="24" fill="#3a322c" /><circle cx="588" cy="316" r="9" fill="#F4EFE6" />
+                <circle cx="536" cy="330" r="26" fill="#1A1614" /><circle cx="536" cy="330" r="13" fill="#3a322c" /><circle cx="536" cy="330" r="5" fill="#F4EFE6" />
                 <circle cx="614" cy="248" r="6" fill="#F4C26B" />
               </g>
-              <path d="M186 86 Q330 60 480 86" stroke="#D8A47F" strokeWidth="2" fill="none" opacity=".7" />
+              <path d="M186 86 Q330 60 480 86" stroke="#F4EFE6" strokeWidth="2" fill="none" opacity=".7" />
               <circle cx="226" cy="78" r="4" fill="#F4C26B" /><circle cx="286" cy="71" r="4" fill="#F4C26B" /><circle cx="346" cy="68" r="4" fill="#F4C26B" /><circle cx="406" cy="71" r="4" fill="#F4C26B" /><circle cx="462" cy="80" r="4" fill="#F4C26B" />
             </svg>
             <div className="hero-chip chip1"><span className="dot"></span><div><strong>Live counter open</strong>Ghee roast dosa · flame on</div></div>
@@ -402,12 +341,12 @@ export default function ArivaWebsite() {
               <rect x="160" y="78" width="100" height="12" rx="6" fill="#6b6259" />
               <path d="M178 70 q8 -22 17 0 q8 -16 14 0 q7 -12 12 0 Z" fill="#E58A3A" />
               <path d="M186 70 q6 -14 11 0 Z" fill="#F4C26B" />
-              <path d="M205 48 q-7 -9 0 -17 q7 -8 0 -16" stroke="#D8A47F" strokeWidth="3.4" strokeLinecap="round" opacity=".8" />
-              <path d="M224 52 q-6 -8 0 -15 q6 -7 0 -13" stroke="#D8A47F" strokeWidth="3" strokeLinecap="round" opacity=".5" />
-              <circle cx="92" cy="84" r="11" fill="#D8A47F" /><rect x="80" y="95" width="24" height="22" rx="8" fill="#B5532D" />
-              <circle cx="130" cy="88" r="9" fill="#D8A47F" /><rect x="120" y="97" width="20" height="20" rx="7" fill="#F4EFE6" />
-              <circle cx="316" cy="86" r="10" fill="#D8A47F" /><rect x="305" y="96" width="22" height="21" rx="8" fill="#D8A47F" />
-              <circle cx="352" cy="90" r="8" fill="#D8A47F" /><rect x="343" y="98" width="18" height="19" rx="7" fill="#B5532D" />
+              <path d="M205 48 q-7 -9 0 -17 q7 -8 0 -16" stroke="#F4EFE6" strokeWidth="3.4" strokeLinecap="round" opacity=".8" />
+              <path d="M224 52 q-6 -8 0 -15 q6 -7 0 -13" stroke="#F4EFE6" strokeWidth="3" strokeLinecap="round" opacity=".5" />
+              <circle cx="92" cy="84" r="11" fill="#F4EFE6" /><rect x="80" y="95" width="24" height="22" rx="8" fill="#B5532D" />
+              <circle cx="130" cy="88" r="9" fill="#F4EFE6" /><rect x="120" y="97" width="20" height="20" rx="7" fill="#F4EFE6" />
+              <circle cx="316" cy="86" r="10" fill="#F4EFE6" /><rect x="305" y="96" width="22" height="21" rx="8" fill="#F4EFE6" />
+              <circle cx="352" cy="90" r="8" fill="#F4EFE6" /><rect x="343" y="98" width="18" height="19" rx="7" fill="#B5532D" />
             </svg>
             <blockquote>"The best food I've ever eaten was never at a restaurant. It was at home, cooked fresh, while everyone watched and waited."
               <cite>- The idea behind ARIVA</cite>
@@ -646,7 +585,7 @@ export default function ArivaWebsite() {
           <div className="blog-grid">
             <article className="blog-card reveal card3d" onClick={() => openPost('post1')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPost('post1') } }} tabIndex="0" role="button" aria-haspopup="dialog" aria-label="Read article: Why live cooking beats any buffet tray">
               <div className="blog-art a1">
-                <svg width="120" height="100" viewBox="0 0 120 100" fill="none"><rect x="24" y="50" width="72" height="12" rx="6" fill="#6b6259" /><path d="M40 44 q8 -22 16 0 q8 -16 14 0 q6 -12 10 0 Z" fill="#E58A3A" /><path d="M48 44 q6 -14 10 0 Z" fill="#F4C26B" /><path d="M62 24 q-6 -8 0 -16" stroke="#D8A47F" strokeWidth="3.4" strokeLinecap="round" /></svg>
+                <svg width="120" height="100" viewBox="0 0 120 100" fill="none"><rect x="24" y="50" width="72" height="12" rx="6" fill="#6b6259" /><path d="M40 44 q8 -22 16 0 q8 -16 14 0 q6 -12 10 0 Z" fill="#E58A3A" /><path d="M48 44 q6 -14 10 0 Z" fill="#F4C26B" /><path d="M62 24 q-6 -8 0 -16" stroke="#F4EFE6" strokeWidth="3.4" strokeLinecap="round" /></svg>
               </div>
               <div className="blog-body">
                 <div className="blog-tagline">Why Live</div>
@@ -750,7 +689,7 @@ export default function ArivaWebsite() {
           <div className="foot-grid">
             <div>
               <a href="#top" className="logo" aria-label="ariva home">
-                <img className="logo-img" src="/assets/logo.png" alt="ariva" />
+                <img className="logo-img" src="/assets/ariva-logo-light.svg" alt="ariva" style={{ height: '56px', width: 'auto' }} />
               </a>
               <p style={{ marginTop: '14px', maxWidth: '300px' }}>Mobile live kitchen · Hyderabad · est. 2026<br />The live kitchen comes to you.</p>
             </div>

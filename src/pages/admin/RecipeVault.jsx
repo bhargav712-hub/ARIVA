@@ -8,58 +8,57 @@ export default function RecipeVault() {
   const [accessDenied, setAccessDenied] = useState(false)
 
   useEffect(() => {
+    async function checkAccessAndFetch() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+          setAccessDenied(true)
+          setLoading(false)
+          return
+        }
+
+        // 1. Check if user is an admin in profiles table
+        const { data: roleData, error: roleError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .eq('role', 'admin')
+          .single()
+        
+        if (roleError || !roleData) {
+          setAccessDenied(true)
+          setLoading(false)
+          return
+        }
+
+        // 2. Authorized Fetching
+        const { data, error } = await supabase
+          .from('recipes')
+          .select(`
+            id,
+            signature_recipe_details,
+            menu_items ( name )
+          `)
+        
+        if (error) {
+          // Handle RLS rejection just in case the policy blocked it
+          if (error.code === '42501' || error.message.includes('row-level security')) {
+            setAccessDenied(true)
+          } else {
+            throw error
+          }
+        } else {
+          setRecipes(data || [])
+        }
+      } catch (err) {
+        console.error('Vault Decryption Error:', err.message)
+        setAccessDenied(true)
+      } finally {
+        setLoading(false)
+      }
+    }
     checkAccessAndFetch()
   }, [])
-
-  async function checkAccessAndFetch() {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        setAccessDenied(true)
-        setLoading(false)
-        return
-      }
-
-      // 1. Check if user is an admin in profiles table
-      const { data: roleData, error: roleError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .eq('role', 'admin')
-        .single()
-      
-      if (roleError || !roleData) {
-        setAccessDenied(true)
-        setLoading(false)
-        return
-      }
-
-      // 2. Authorized Fetching
-      const { data, error } = await supabase
-        .from('recipes')
-        .select(`
-          id,
-          signature_recipe_details,
-          menu_items ( name )
-        `)
-      
-      if (error) {
-        // Handle RLS rejection just in case the policy blocked it
-        if (error.code === '42501' || error.message.includes('row-level security')) {
-          setAccessDenied(true)
-        } else {
-          throw error
-        }
-      } else {
-        setRecipes(data || [])
-      }
-    } catch (err) {
-      console.error('Vault Decryption Error:', err.message)
-      setAccessDenied(true)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) return <div style={{ padding: '20px' }}>Decrypting Vault...</div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 import { Share2, Lock } from 'lucide-react'
@@ -10,47 +10,47 @@ export default function CustomerGallery() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function loadGallery() {
+      setLoading(true)
+      
+      // Fetch completed bookings for this user
+      const { data: bookingData } = await supabase
+        .from('bookings')
+        .select('id, event_date, guest_count')
+        .eq('user_id', currentUser.id)
+        .eq('status', 'completed')
+        .order('event_date', { ascending: false })
+
+      if (bookingData && bookingData.length > 0) {
+        setEvents(bookingData)
+        
+        const bookingIds = bookingData.map(b => b.id)
+        
+        // Fetch memories for these bookings
+        const { data: memoryData } = await supabase
+          .from('event_memories')
+          .select('*')
+          .in('booking_id', bookingIds)
+
+        if (memoryData) {
+          // Group memories by booking ID
+          const grouped = {}
+          bookingIds.forEach(id => grouped[id] = [])
+          memoryData.forEach(m => {
+            if (!grouped[m.booking_id]) grouped[m.booking_id] = []
+            grouped[m.booking_id].push(m)
+          })
+          setMemories(grouped)
+        }
+      }
+      
+      setLoading(false)
+    }
+
     if (currentUser) {
       loadGallery()
     }
   }, [currentUser])
-
-  async function loadGallery() {
-    setLoading(true)
-    
-    // Fetch completed bookings for this user
-    const { data: bookingData } = await supabase
-      .from('bookings')
-      .select('id, event_date, guest_count')
-      .eq('user_id', currentUser.id)
-      .eq('status', 'completed')
-      .order('event_date', { ascending: false })
-
-    if (bookingData && bookingData.length > 0) {
-      setEvents(bookingData)
-      
-      const bookingIds = bookingData.map(b => b.id)
-      
-      // Fetch memories for these bookings
-      const { data: memoryData } = await supabase
-        .from('event_memories')
-        .select('*')
-        .in('booking_id', bookingIds)
-
-      if (memoryData) {
-        // Group memories by booking ID
-        const grouped = {}
-        bookingIds.forEach(id => grouped[id] = [])
-        memoryData.forEach(m => {
-          if (!grouped[m.booking_id]) grouped[m.booking_id] = []
-          grouped[m.booking_id].push(m)
-        })
-        setMemories(grouped)
-      }
-    }
-    
-    setLoading(false)
-  }
 
   const handleShare = (eventId) => {
     // In a real app, this would generate a signed/public token link

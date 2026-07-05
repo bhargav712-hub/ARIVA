@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
-import { Truck, Map, CheckSquare, Camera, AlertTriangle, Clock } from 'lucide-react'
+import { Map, CheckSquare, Camera, AlertTriangle } from 'lucide-react'
 import StaffActiveDispatch from './StaffActiveDispatch'
 import StaffChecklists from './StaffChecklists'
 import StaffCamera from './StaffCamera'
@@ -11,15 +11,15 @@ export default function StaffPortal({ currentUser }) {
   const [profile, setProfile] = useState(null)
 
   useEffect(() => {
+    async function loadProfile() {
+      const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
+      if (data) setProfile(data)
+    }
+
     if (currentUser) {
       loadProfile()
     }
   }, [currentUser])
-
-  async function loadProfile() {
-    const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
-    if (data) setProfile(data)
-  }
 
   const renderTab = () => {
     switch (activeTab) {

@@ -7,29 +7,29 @@ export default function Logistics() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    async function fetchLogistics() {
+      try {
+        const { data, error } = await supabase
+          .from('cart_logistics')
+          .select(`
+            id,
+            current_gps_lat,
+            current_gps_lng,
+            status,
+            profiles ( role )
+          `)
+        
+        if (error) throw error
+        setLogistics(data || [])
+      } catch (err) {
+        console.error('Error fetching logistics:', err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
     fetchLogistics()
   }, [])
-
-  async function fetchLogistics() {
-    try {
-      const { data, error } = await supabase
-        .from('cart_logistics')
-        .select(`
-          id,
-          current_gps_lat,
-          current_gps_lng,
-          status,
-          profiles ( role )
-        `)
-      
-      if (error) throw error
-      setLogistics(data || [])
-    } catch (err) {
-      console.error('Error fetching logistics:', err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) return <div style={{ padding: '20px' }}>Loading Logistics...</div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import { Book, Lock, AlertTriangle } from 'lucide-react'
 
@@ -8,15 +8,15 @@ export default function ChefSignatureLibrary({ currentUser }) {
   const [selectedRecipe, setSelectedRecipe] = useState(null)
 
   useEffect(() => {
+    async function loadLibrary() {
+      setLoading(true)
+      const { data } = await supabase.from('menu_items').select('*').eq('is_active', true)
+      if (data) setRecipes(data)
+      setLoading(false)
+    }
+
     loadLibrary()
   }, [])
-
-  async function loadLibrary() {
-    setLoading(true)
-    const { data } = await supabase.from('menu_items').select('*').eq('is_active', true)
-    if (data) setRecipes(data)
-    setLoading(false)
-  }
 
   // Dummy recipe data since the actual 'menu_items' table currently only holds names and prices
   const dummyDetails = {

@@ -12,24 +12,24 @@ export default function Customers() {
   const [roleFilter, setRoleFilter] = useState('all')
 
   useEffect(() => {
+    async function fetchCustomers() {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: false })
+        
+        if (error) throw error
+        setProfiles(data || [])
+      } catch (err) {
+        console.error('Error fetching profiles:', err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
     fetchCustomers()
   }, [])
-
-  async function fetchCustomers() {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if (error) throw error
-      setProfiles(data || [])
-    } catch (err) {
-      console.error('Error fetching profiles:', err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function updateDietaryNotes(id, newNotes) {
     try {

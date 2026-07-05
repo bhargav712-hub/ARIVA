@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
-import { Beaker, Check, X } from 'lucide-react'
+import { Beaker, Check } from 'lucide-react'
 
 export default function ChefBYORQueue() {
   const [recipes, setRecipes] = useState([])

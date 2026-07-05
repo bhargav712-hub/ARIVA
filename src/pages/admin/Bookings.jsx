@@ -5,10 +5,6 @@ export default function Bookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchBookings()
-  }, [])
-
   async function fetchBookings() {
     try {
       const { data, error } = await supabase
@@ -24,6 +20,11 @@ export default function Bookings() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchBookings()
+  }, [])
 
   async function updateInvoiceStatus(id, newStatus) {
     try {

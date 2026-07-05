@@ -1,6 +1,6 @@
 :root{
   --ink:#1A1614;--terracotta:#B5532D;--terracotta-deep:#93421F;
-  --bone:#F4EFE6;--bone-light:#F4F0E7;--sand:#D8A47F;--ink-soft:#5C534D;--white:#FFFFFF;
+  --bone:#F4EFE6;--bone-light:#F4F0E7;--sand:#F4EFE6;--ink-soft:#5C534D;--white:#FFFFFF;
   --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}

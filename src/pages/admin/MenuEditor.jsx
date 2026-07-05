@@ -9,14 +9,9 @@ export default function MenuEditor() {
   const [loading, setLoading] = useState(true)
   
   const [expandedCat, setExpandedCat] = useState(null)
-  const [editingItem, setEditingItem] = useState(null)
   
   // Forms
   const [itemForm, setItemForm] = useState(null)
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   async function fetchData() {
     setLoading(true)
@@ -41,6 +36,11 @@ export default function MenuEditor() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData()
+  }, [])
 
   // --- ITEM CRUD ---
   

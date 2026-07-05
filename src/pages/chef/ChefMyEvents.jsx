@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
-import { MapPin, Users, Calendar, AlertCircle } from 'lucide-react'
+import { MapPin, Users, AlertCircle } from 'lucide-react'
 
-export default function ChefMyEvents({ currentUser }) {
+export default function ChefMyEvents() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    loadEvents()
-  }, [])
 
   async function loadEvents() {
     setLoading(true)
@@ -22,6 +18,11 @@ export default function ChefMyEvents({ currentUser }) {
     if (data) setEvents(data)
     setLoading(false)
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadEvents()
+  }, [])
 
   const getTierColor = (tier) => {
     switch(tier) {

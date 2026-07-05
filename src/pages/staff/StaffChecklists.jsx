@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { CheckSquare, Flame, CheckCircle, Package } from 'lucide-react'
+import { useState } from 'react'
+import { Flame, CheckCircle, Package } from 'lucide-react'
 
 export default function StaffChecklists() {
   const [activeTab, setActiveTab] = useState('pack')

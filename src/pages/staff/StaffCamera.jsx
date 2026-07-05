@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import { Camera, Upload, CheckCircle } from 'lucide-react'
 
@@ -9,31 +9,31 @@ export default function StaffCamera() {
   const [photoCount, setPhotoCount] = useState(0)
 
   useEffect(() => {
+    async function loadActiveDispatch() {
+      setLoading(true)
+      const { data } = await supabase
+        .from('bookings')
+        .select('id, event_date')
+        .in('status', ['dispatched_to_cart', 'live_cooking'])
+        .order('event_date', { ascending: true })
+        .limit(1)
+
+      if (data && data.length > 0) {
+        setActiveEvent(data[0])
+        
+        // Check how many photos already exist
+        const { count } = await supabase
+          .from('event_memories')
+          .select('*', { count: 'exact', head: true })
+          .eq('booking_id', data[0].id)
+          
+        if (count) setPhotoCount(count)
+      }
+      setLoading(false)
+    }
+
     loadActiveDispatch()
   }, [])
-
-  async function loadActiveDispatch() {
-    setLoading(true)
-    const { data } = await supabase
-      .from('bookings')
-      .select('id, event_date')
-      .in('status', ['dispatched_to_cart', 'live_cooking'])
-      .order('event_date', { ascending: true })
-      .limit(1)
-
-    if (data && data.length > 0) {
-      setActiveEvent(data[0])
-      
-      // Check how many photos already exist
-      const { count } = await supabase
-        .from('event_memories')
-        .select('*', { count: 'exact', head: true })
-        .eq('booking_id', data[0].id)
-        
-      if (count) setPhotoCount(count)
-    }
-    setLoading(false)
-  }
 
   const simulateUpload = async () => {
     setUploading(true)

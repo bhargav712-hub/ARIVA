@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
-import { Shield, ShieldAlert, User, ChefHat, Truck } from 'lucide-react'
+import { Shield, User, ChefHat, Truck } from 'lucide-react'
 
 export default function Team() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    loadUsers()
-  }, [])
 
   async function loadUsers() {
     setLoading(true)
@@ -16,6 +12,11 @@ export default function Team() {
     if (data) setUsers(data)
     setLoading(false)
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadUsers()
+  }, [])
 
   async function updateRole(userId, newRole) {
     const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId)

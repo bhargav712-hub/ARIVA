@@ -3,9 +3,6 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import './Account.css'
 
-function esc(s) {
-  return (s == null ? '' : String(s)).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
-}
 
 export default function Account() {
   const navigate = useNavigate()

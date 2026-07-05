@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './BookingPage.css';
@@ -38,52 +38,52 @@ export default function BookingPage() {
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch packages
+        const { data: pkgs, error: pkgErr } = await supabase
+          .from('packages')
+          .select('*, package_category_limits(*)')
+          .eq('is_active', true)
+          .order('display_order');
+          
+        if (pkgErr) throw pkgErr;
+        setPackages(pkgs || []);
+
+        // Fetch menu categories
+        const { data: cats, error: catErr } = await supabase
+          .from('menu_categories')
+          .select('*')
+          .eq('is_active', true)
+          .order('section_number');
+        if (catErr) throw catErr;
+        setCategories(cats || []);
+
+        // Fetch menu items
+        const { data: items, error: itemErr } = await supabase
+          .from('menu_items')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order');
+        if (!itemErr) setMenuItems(items || []);
+
+        // Fetch variants
+        const { data: vars, error: varErr } = await supabase
+          .from('menu_item_variants')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order');
+        if (!varErr) setVariants(vars || []);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchData();
   }, []);
-
-  const fetchData = async () => {
-    try {
-      // Fetch packages
-      const { data: pkgs, error: pkgErr } = await supabase
-        .from('packages')
-        .select('*, package_category_limits(*)')
-        .eq('is_active', true)
-        .order('display_order');
-        
-      if (pkgErr) throw pkgErr;
-      setPackages(pkgs || []);
-
-      // Fetch menu categories
-      const { data: cats, error: catErr } = await supabase
-        .from('menu_categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('section_number');
-      if (catErr) throw catErr;
-      setCategories(cats || []);
-
-      // Fetch menu items
-      const { data: items, error: itemErr } = await supabase
-        .from('menu_items')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
-      if (!itemErr) setMenuItems(items || []);
-
-      // Fetch variants
-      const { data: vars, error: varErr } = await supabase
-        .from('menu_item_variants')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
-      if (!varErr) setVariants(vars || []);
-
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSelectPackage = (pkg) => {
     setSelectedPackage(pkg);
